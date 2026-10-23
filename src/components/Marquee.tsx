@@ -47,7 +47,7 @@ const Marquee = async () => {
     const headlines = Array.isArray(data) ? data : data.data ?? [];
 
     return (
-        <div className="bg-[#f8faf8] text-white border-y-gray-300 border-2 my-2">
+        <div className="bg-[#f8faf8] text-white border-y-gray-300 border-2">
             <MarqueeText
                 className="py-1"
                 direction="right"
