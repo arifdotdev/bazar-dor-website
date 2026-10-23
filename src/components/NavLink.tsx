@@ -17,8 +17,6 @@ interface NavLinkProps {
 const NavLink = ({ categoriesDataPromise }: NavLinkProps) => {
     const categories = use(categoriesDataPromise);
 
-    console.log(categories);
-
     return (
         <nav className="flex flex-wrap items-center gap-4">
             {categories.map((category, index) => (
