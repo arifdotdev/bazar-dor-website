@@ -11,11 +11,25 @@ interface Headlines {
     categoryIcon: string
     nameBn: string
     today: number
+    unit: string
     change?: {
         dir?: string;
         pct?: number | string;
     };
 }
+
+const toBn = (n: number) =>
+    n.toLocaleString("bn-BD", {
+        minimumFractionDigits: Number.isInteger(n) ? 0 : 2,
+        maximumFractionDigits: 2,
+    });
+
+const unitBn: Record<string, string> = {
+    kg: "কেজি",
+    litre: "লিটার",
+    dozen: "ডজন",
+    piece: "পিস",
+};
 
 const ChangeIndicator = ({ dir }: ChangeIndicatorProps) => {
     if (dir?.toLowerCase() === "down") {
@@ -47,7 +61,7 @@ const Marquee = async () => {
     const headlines = Array.isArray(data) ? data : data.data ?? [];
 
     return (
-        <div className="bg-[#f8faf8] text-white border-y-gray-300 border-2">
+        <div className="bg-[#f8faf8] border-y-2 border-gray-300">
             <MarqueeText
                 className="py-1"
                 direction="right"
@@ -56,7 +70,7 @@ const Marquee = async () => {
                 {headlines.map((h: Headlines) => (
                     <Link
                         className="hover:underline"
-                        href="/"
+                        href={`/products/${h.id}`}
                         key={h.id}
                     >
                         <div className="text-[#1D271F] flex gap-1 items-center">
@@ -65,8 +79,8 @@ const Marquee = async () => {
                             <span>{h.nameBn}</span>
 
                             <div className="flex gap-1 items-center">
-                                <span>{h.today}</span>
-                                <span>টাকা/কেজি</span>
+                                <span>{toBn(h.today)}</span>
+                                <span>টাকা/{unitBn[h.unit] ?? h.unit}</span>
                             </div>
 
                             <div className="flex gap-1 items-center">
@@ -81,7 +95,7 @@ const Marquee = async () => {
                                                 : "text-gray-500"
                                     }
                                 >
-                                    {h.change?.pct}%
+                                    {toBn(Math.abs(Number(h.change?.pct ?? 0)))}%
                                 </span>
                             </div>
 

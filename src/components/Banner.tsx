@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const Banner = () => {
     return (
@@ -20,12 +21,12 @@ const Banner = () => {
                         দামের পরিবর্তন এক জায়গায়।
                     </p>
 
-                    <a
-                        href="/products"
+                    <Link
+                        href="#allProductId"
                         className="mt-6 inline-flex items-center justify-center rounded-lg bg-[#078b45] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_3px_0_#056c36] transition hover:bg-[#06783c] active:translate-y-0.5 active:shadow-none"
                     >
                         সব পণ্য দেখুন
-                    </a>
+                    </Link>
                 </div>
 
                 {/* Banner Image */}

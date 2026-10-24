@@ -1,16 +1,19 @@
-import Image from "next/image";
 import AllProducts from "./AllProducts";
+import ProductCard from "@/components/ProductCard";
 
 interface Product {
     id: number | string;
     nameBn: string;
     image?: string;
+    unit?: string;
     today: number | string;
     change?: {
         pct?: number | string;
         dir?: string;
     };
 }
+
+
 
 const ProductSection = async () => {
     const res = await fetch(
@@ -26,15 +29,15 @@ const ProductSection = async () => {
 
     const data: Product[] = await res.json();
 
-    // Filter products whose prices increased
-    const upProducts = data.filter(
-        (product) => product.change?.dir === "up"
-    );
+    // Products whose prices increased, biggest rise first
+    const upProducts = data
+        .filter((product) => product.change?.dir === "up")
+        .sort((a, b) => Number(b.change?.pct ?? 0) - Number(a.change?.pct ?? 0));
 
-    // Filter products whose prices decreased
-    const downProducts = data.filter(
-        (product) => product.change?.dir === "down"
-    );
+    // Products whose prices decreased, biggest drop first
+    const downProducts = data
+        .filter((product) => product.change?.dir === "down")
+        .sort((a, b) => Number(a.change?.pct ?? 0) - Number(b.change?.pct ?? 0));
 
     return (
         <div className="mx-auto max-w-7xl">
@@ -45,64 +48,9 @@ const ProductSection = async () => {
                 </h2>
 
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {upProducts.slice(0, 6).map((product) => {
-                        const change = Number(product.change?.pct ?? 0);
-
-                        return (
-                            <div
-                                key={product.id}
-                                className="rounded-2xl border border-[#dfe7df] bg-[#fbfdfb] p-3.5 transition-shadow hover:shadow-sm"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#f0f4ef]">
-                                        {product.image?.startsWith("http") ? (
-                                            <Image
-                                                src={product.image}
-                                                alt={product.nameBn}
-                                                width={36}
-                                                height={36}
-                                                className="h-9 w-9 object-contain"
-                                            />
-                                        ) : (
-                                            <span className="text-2xl">
-                                                {product.image || "🛒"}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="min-w-0">
-                                        <h3 className="truncate text-sm font-bold text-[#202b23]">
-                                            {product.nameBn}
-                                        </h3>
-
-                                        <p className="mt-0.5 text-xs text-[#7b847c]">
-                                            প্রতি কেজি
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="mt-3 flex items-end justify-between gap-2">
-                                    <div>
-                                        <p className="text-xs text-[#68736a]">
-                                            আজকের দাম
-                                        </p>
-
-                                        <p className="mt-0.5 text-base font-bold text-[#202b23]">
-                                            {product.today} টাকা
-                                        </p>
-                                    </div>
-
-                                    <span className="mb-0.5 inline-flex shrink-0 items-center gap-1 rounded-full bg-[#fceeee] px-2 py-1 text-[11px] font-semibold text-[#dc4545]">
-                                        ▲{" "}
-                                        {Math.abs(change).toLocaleString("bn-BD", {
-                                            maximumFractionDigits: 2,
-                                        })}
-                                        %
-                                    </span>
-                                </div>
-                            </div>
-                        );
-                    })}
+                    {upProducts.slice(0, 6).map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
                 </div>
 
                 {upProducts.length === 0 && (
@@ -119,64 +67,9 @@ const ProductSection = async () => {
                 </h2>
 
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {downProducts.slice(0, 6).map((product) => {
-                        const change = Number(product.change?.pct ?? 0);
-
-                        return (
-                            <div
-                                key={product.id}
-                                className="rounded-2xl border border-[#dfe7df] bg-[#fbfdfb] p-3.5 transition-shadow hover:shadow-sm"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#f0f4ef]">
-                                        {product.image?.startsWith("http") ? (
-                                            <Image
-                                                src={product.image}
-                                                alt={product.nameBn}
-                                                width={36}
-                                                height={36}
-                                                className="h-9 w-9 object-contain"
-                                            />
-                                        ) : (
-                                            <span className="text-2xl">
-                                                {product.image || "🛒"}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="min-w-0">
-                                        <h3 className="truncate text-sm font-bold text-[#202b23]">
-                                            {product.nameBn}
-                                        </h3>
-
-                                        <p className="mt-0.5 text-xs text-[#7b847c]">
-                                            প্রতি কেজি
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="mt-3 flex items-end justify-between gap-2">
-                                    <div>
-                                        <p className="text-xs text-[#68736a]">
-                                            আজকের দাম
-                                        </p>
-
-                                        <p className="mt-0.5 text-base font-bold text-[#202b23]">
-                                            {product.today} টাকা
-                                        </p>
-                                    </div>
-
-                                    <span className="mb-0.5 inline-flex shrink-0 items-center gap-1 rounded-full bg-[#eaf7ee] px-2 py-1 text-[11px] font-semibold text-[#159447]">
-                                        ▼{" "}
-                                        {Math.abs(change).toLocaleString("bn-BD", {
-                                            maximumFractionDigits: 2,
-                                        })}
-                                        %
-                                    </span>
-                                </div>
-                            </div>
-                        );
-                    })}
+                    {downProducts.slice(0, 6).map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
                 </div>
 
                 {downProducts.length === 0 && (
@@ -187,7 +80,7 @@ const ProductSection = async () => {
             </section>
 
             {/* All products */}
-            <section className="mt-8">
+            <section className="mt-8" id='allProductId'>
                 <AllProducts data={data} />
             </section>
         </div>

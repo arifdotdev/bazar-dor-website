@@ -1,15 +1,45 @@
 import Image from 'next/image';
-import React from 'react';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-const CategoryPages = async ({ params }: { pamras: { categoryId: string } }) => {
+interface Product {
+    id: number;
+    nameBn: string;
+    categoryNameBn: string;
+    categoryIcon: string;
+    image: string;
+    unit: string;
+    today: number;
+    change?: {
+        dir?: string;
+        pct?: number | string;
+    };
+}
+
+const toBn = (n: number) =>
+    n.toLocaleString("bn-BD", {
+        minimumFractionDigits: Number.isInteger(n) ? 0 : 2,
+        maximumFractionDigits: 2,
+    });
+
+const unitBn: Record<string, string> = {
+    kg: "কেজি",
+    litre: "লিটার",
+    dozen: "ডজন",
+    piece: "পিস",
+};
+
+const CategoryPages = async ({ params }: { params: Promise<{ categoryId: string }> }) => {
     const { categoryId } = await params;
 
     const res = await fetch(`https://openapi.programming-hero.com/api/bazardor/products?category=${categoryId}`)
 
-    const categoryData = await res.json()
-    console.log(categoryData);
+    const categoryData: Product[] = await res.json()
 
-    // const categoryNames = categoryData.map((item) => item.categoryNameBn);
+    if (!Array.isArray(categoryData) || categoryData.length === 0) {
+        notFound()
+    }
+
     const categoryNameBn = categoryData[0]?.categoryNameBn;
     const categoryIcon = categoryData[0]?.categoryIcon;
 
@@ -22,7 +52,7 @@ const CategoryPages = async ({ params }: { pamras: { categoryId: string } }) => 
                         <div className='text-4xl'>{categoryIcon}</div>
                         <div>
                             <h2 className='font-bold text-3xl'>{categoryNameBn}</h2>
-                            <p>{categoryData.length}টি পণ্যের আজকের দাম ও পরিবর্তন</p>
+                            <p>{toBn(categoryData.length)}টি পণ্যের আজকের দাম ও পরিবর্তন</p>
                         </div>
                     </div>
                 </div>
@@ -42,7 +72,8 @@ const CategoryPages = async ({ params }: { pamras: { categoryId: string } }) => 
                             const isNegative = change < 0;
 
                             return (
-                                <div
+                                <Link
+                                    href={`/products/${product.id}`}
                                     key={product.id}
                                     className="rounded-2xl border border-[#dfe7df] bg-[#fbfdfb] p-3.5 transition-shadow hover:shadow-sm"
                                 >
@@ -70,7 +101,7 @@ const CategoryPages = async ({ params }: { pamras: { categoryId: string } }) => 
                                                 {product.nameBn}
                                             </h3>
                                             <p className="mt-0.5 text-xs text-[#7b847c]">
-                                                প্রতি কেজি
+                                                প্রতি {unitBn[product.unit] ?? product.unit}
                                             </p>
                                         </div>
                                     </div>
@@ -82,7 +113,7 @@ const CategoryPages = async ({ params }: { pamras: { categoryId: string } }) => 
                                                 আজকের দাম
                                             </p>
                                             <p className="mt-0.5 text-base font-bold text-[#202b23]">
-                                                {product.today} টাকা
+                                                {toBn(product.today)} টাকা
                                             </p>
                                         </div>
 
@@ -101,7 +132,7 @@ const CategoryPages = async ({ params }: { pamras: { categoryId: string } }) => 
                                             })}%
                                         </span>
                                     </div>
-                                </div>
+                                </Link>
                             );
                         })}
                     </div>
