@@ -20,6 +20,13 @@
 # production
 /build
 
+.claud
+.claude/
+/claude
+claude
+.claude/settings.local.json
+CLAUDE.md
+
 # misc
 .DS_Store
 *.pem
