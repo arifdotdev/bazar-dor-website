@@ -71,25 +71,6 @@ cd bazar-dor-website
 npm install
 ```
 
-### Environment variables
-
-Create a `.env` file in the project root:
-
-```env
-BETTER_AUTH_SECRET=your_random_secret
-BETTER_AUTH_URL=http://localhost:3000
-MONGODB_URI=your_mongodb_connection_string
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
-```
-
-OAuth callback URLs to register with each provider:
-
-- Google: `http://localhost:3000/api/auth/callback/google`
-- GitHub: `http://localhost:3000/api/auth/callback/github`
-
 ### Run the app
 
 ```bash
