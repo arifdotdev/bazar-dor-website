@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import SortSelect from '@/components/SortSelect';
+import { parseSortOption, sortByPrice, toPriceNumber } from '@/lib/sortProducts';
 
 interface Product {
     id: number;
@@ -9,7 +11,7 @@ interface Product {
     categoryIcon: string;
     image: string;
     unit: string;
-    today: number;
+    today: number | string;
     change?: {
         dir?: string;
         pct?: number | string;
@@ -29,13 +31,22 @@ const unitBn: Record<string, string> = {
     piece: "পিস",
 };
 
-const CategoryPages = async ({ params }: { params: Promise<{ categoryId: string }> }) => {
+interface CategoryPageProps {
+    params: Promise<{ categoryId: string }>;
+    searchParams: Promise<{ sort?: string }>;
+}
+
+const CategoryPages = async ({ params, searchParams }: CategoryPageProps) => {
     const { categoryId } = await params;
+    const { sort: sortParam } = await searchParams;
+    const sort = parseSortOption(sortParam);
 
     const res = await fetch(`https://openapi.programming-hero.com/api/bazardor/products?category=${categoryId}`)
 
-    const categoryData: Product[] = await res.json()
+    // API error → treat like an empty category
+    const categoryData: Product[] = res.ok ? await res.json() : []
 
+    // invalid slug or no products → category not-found.tsx
     if (!Array.isArray(categoryData) || categoryData.length === 0) {
         notFound()
     }
@@ -43,30 +54,32 @@ const CategoryPages = async ({ params }: { params: Promise<{ categoryId: string 
     const categoryNameBn = categoryData[0]?.categoryNameBn;
     const categoryIcon = categoryData[0]?.categoryIcon;
 
+    // sort by today's numeric price; "default" keeps the API order
+    const sortedProducts = sortByPrice(categoryData, sort);
+
 
     return (
-        <div className='bg-[#F0F5F0]'>
-            <div className='max-w-7xl mx-auto '>
-                <div className='my-5 border-0 space-y-10 rounded-4xl'>
-                    <div className='bg-[#fff] p-5 border-0 rounded-4xl flex items-center gap-3'>
-                        <div className='text-4xl'>{categoryIcon}</div>
-                        <div>
-                            <h2 className='font-bold text-3xl'>{categoryNameBn}</h2>
-                            <p>{toBn(categoryData.length)}টি পণ্যের আজকের দাম ও পরিবর্তন</p>
+        <div className='flex-1 bg-[#F0F5F0] px-4 sm:px-6'>
+            <div className='max-w-6xl mx-auto py-1'>
+                <div className='my-5 border-0 space-y-10 rounded-3xl sm:rounded-4xl'>
+                    <div className='bg-[#fff] p-4 border-0 rounded-3xl flex items-center gap-3 sm:p-5 sm:gap-4 sm:rounded-4xl'>
+                        <div className='shrink-0 text-3xl sm:text-4xl'>{categoryIcon}</div>
+                        <div className='min-w-0'>
+                            <h2 className='font-bold text-2xl sm:text-3xl'>{categoryNameBn}</h2>
+                            <p className='text-sm sm:text-base'>{toBn(categoryData.length)}টি পণ্যের আজকের দাম ও পরিবর্তন</p>
                         </div>
                     </div>
                 </div>
-                {/* filter */}
-                <div className='my-5 border-0 space-y-10 rounded-4xl'>
-                    <div className='bg-[#fff] p-5 border-0 rounded-4xl text-right'>
-                        <p>sajan</p>
-                        <input type="text" placeholder='sajan' />
+                {/* sort */}
+                <div className='my-5 border-0 rounded-3xl sm:rounded-4xl'>
+                    <div className='bg-[#fff] p-4 border-0 rounded-3xl flex justify-end sm:p-5 sm:rounded-4xl'>
+                        <SortSelect value={sort} />
                     </div>
                 </div>
 
                 <div className='mb-10'>
                     <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {categoryData.map((product) => {
+                        {sortedProducts.map((product) => {
                             const change = Number(product.change?.pct ?? 0);
                             const isPositive = change > 0;
                             const isNegative = change < 0;
@@ -113,7 +126,7 @@ const CategoryPages = async ({ params }: { params: Promise<{ categoryId: string 
                                                 আজকের দাম
                                             </p>
                                             <p className="mt-0.5 text-base font-bold text-[#202b23]">
-                                                {toBn(product.today)} টাকা
+                                                {toBn(toPriceNumber(product.today))} টাকা
                                             </p>
                                         </div>
 

@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, LogOut, UserRound } from 'lucide-react';
-import { Avatar, Dropdown, toast } from '@heroui/react';
+import { Avatar, Dropdown } from '@heroui/react';
+import toast from 'react-hot-toast';
 import { authClient } from '@/lib/auth-client';
+import { Bone } from './Skeletons';
 
 const UserInfo = () => {
     const router = useRouter();
@@ -19,26 +21,23 @@ const UserInfo = () => {
 
     // session still loading → keep the space empty so the buttons don't flash
     if (isPending) {
-        return <div className="h-11 w-32 animate-pulse rounded-xl bg-[#eef3ee]" />;
+        return <Bone className="h-9 w-28 rounded-xl sm:h-11 sm:w-32" />;
     }
 
     // signed out → sign in / sign up buttons
     if (!session) {
         return (
-            <div className="flex items-center gap-3 text-sm">
-                <div>
-                    <Link href={"/signin"}>
-                        <button className="btn btn-ghost rounded-xl px-5 text-base font-semibold text-[#202b23] transition-colors hover:bg-[#eef3ee] hover:text-[#0f8a3c]">
-                            সাইন ইন
-                        </button>
-                    </Link>
-                    <Link href={"/signup"}>
-                        {" "}
-                        <button className="btn rounded-xl border-[#0f8a3c] bg-[#0f8a3c] px-6 text-base font-semibold text-white shadow-md shadow-[#0f8a3c]/30 transition-colors hover:border-[#0c7a34] hover:bg-[#0c7a34]">
-                            সাইন আপ
-                        </button>
-                    </Link>
-                </div>
+            <div className="flex items-center gap-1 text-sm sm:gap-2">
+                <Link href={"/signin"}>
+                    <button className="btn btn-sm btn-ghost rounded-xl whitespace-nowrap px-3 text-sm font-semibold text-[#202b23] transition-colors hover:bg-[#eef3ee] hover:text-[#0f8a3c] sm:btn-md sm:px-5 sm:text-base">
+                        সাইন ইন
+                    </button>
+                </Link>
+                <Link href={"/signup"}>
+                    <button className="btn btn-sm whitespace-nowrap rounded-xl border-[#0f8a3c] bg-[#0f8a3c] px-3 text-sm font-semibold text-white shadow-md shadow-[#0f8a3c]/30 transition-colors hover:border-[#0c7a34] hover:bg-[#0c7a34] sm:btn-md sm:px-6 sm:text-base">
+                        সাইন আপ
+                    </button>
+                </Link>
             </div>
         );
     }
@@ -50,7 +49,7 @@ const UserInfo = () => {
     return (
         <Dropdown>
             <Dropdown.Trigger className="flex cursor-pointer items-center gap-3 rounded-xl px-1 py-1 outline-none transition-colors hover:bg-[#eef3ee] focus-visible:ring-2 focus-visible:ring-[#159447]/30">
-                <Avatar className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#eaf7ee]">
+                <Avatar className="flex size-10 shrink-0 sm:size-11 items-center justify-center overflow-hidden rounded-xl bg-[#eaf7ee]">
                     {user.image && (
                         <Avatar.Image
                             src={user.image}
@@ -71,7 +70,7 @@ const UserInfo = () => {
 
             <Dropdown.Popover
                 placement="bottom end"
-                className="w-72 rounded-2xl border border-[#e3ebe3] bg-[#fbfdfb] p-2 shadow-lg"
+                className="w-72 max-w-[calc(100vw-2rem)] rounded-2xl border border-[#e3ebe3] bg-[#fbfdfb] p-2 shadow-lg"
             >
                 {/* user name and email */}
                 <div className="px-3 pt-2 pb-3">

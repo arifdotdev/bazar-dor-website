@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 type Market = { market: string; division: string; min: number; max: number };
@@ -8,16 +9,17 @@ const toBn = (n: number) =>
         maximumFractionDigits: 2,
     });
 
-const ProductDetailsPage = async ({ params }: { params: { productsId: string } }) => {
+const ProductDetailsPage = async ({ params }: { params: Promise<{ productsId: string }> }) => {
     const { productsId } = await params;
 
     const res = await fetch(`https://openapi.programming-hero.com/api/bazardor/products/${productsId}`)
-    const productData = await res.json()
 
-    console.log(productData);
-    if (!productData) {
+    // unknown id → API answers 404 { error: "Not found" } → products not-found.tsx
+    if (!res.ok) {
         notFound()
     }
+
+    const productData = await res.json()
 
     const rateIncreaseDecrease = productData.yesterday - productData.today
 
@@ -51,22 +53,28 @@ const ProductDetailsPage = async ({ params }: { params: { productsId: string } }
 
 
     return (
-        <div className='bg-[#F0F5F0] py-10'>
+        <div className='flex-1 bg-[#F0F5F0] px-4 py-6 sm:px-6 sm:py-10'>
 
-            <div className='max-w-7xl mx-auto space-y-5'>
+            <div className='max-w-6xl mx-auto space-y-5'>
                 {/* breadcrumbs */}
-                <div>Home/cha/batham size</div>
+                <nav aria-label='breadcrumb' className='flex min-w-0 items-center gap-2 text-sm text-[#68736a] sm:text-base'>
+                    <Link href='/' className='shrink-0 hover:text-[#159447] hover:underline'>হোম</Link>
+                    <span>/</span>
+                    <Link href={`/category/${productData.category}`} className='shrink-0 hover:text-[#159447] hover:underline'>{productData.categoryNameBn}</Link>
+                    <span>/</span>
+                    <span className='truncate font-semibold text-[#202b23]'>{productData.nameBn}</span>
+                </nav>
                 {/* titles */}
-                <div className='flex justify-between items-center p-10 rounded-3xl bg-white'>
-                    <div className='flex items-center gap-3'>
-                        <div className='bg-[#F0F5F0] p-5 rounded-2xl text-7xl'>{productData.image}</div>
-                        <div className='space-y-2'>
-                            <h2 className='text-4xl font-extrabold'>{productData.nameBn}</h2>
+                <div className='flex flex-col gap-5 rounded-3xl bg-white p-5 sm:p-8 md:flex-row md:items-center md:justify-between lg:p-10'>
+                    <div className='flex min-w-0 items-center gap-3 sm:gap-4'>
+                        <div className='shrink-0 bg-[#F0F5F0] p-3 rounded-2xl text-5xl sm:p-5 sm:text-7xl'>{productData.image}</div>
+                        <div className='min-w-0 space-y-1 text-sm sm:space-y-2 sm:text-base'>
+                            <h2 className='text-2xl font-extrabold break-words sm:text-3xl lg:text-4xl'>{productData.nameBn}</h2>
                             <p>প্রতি কেজি · <span>{productData.categoryNameBn}</span></p>
                             <p>গতকালের তুলনায় আজ দাম <span className='font-bold'>{rateAdded()}</span> টাকা</p>
                         </div>
                     </div>
-                    <div className='text-center bg-[#F0F5F0] p-5 rounded-2xl'>
+                    <div className='shrink-0 text-center bg-[#F0F5F0] p-5 rounded-2xl md:min-w-44'>
                         <p>আজকের দাম</p>
                         <p className='font-bold text-2xl'>{toBn(productData.today)}</p>
                         <p>টাকা / কেজি</p>
@@ -90,30 +98,30 @@ const ProductDetailsPage = async ({ params }: { params: { productsId: string } }
                 </div>
 
                 {/* description */}
-                <div className='rounded-3xl bg-white p-6 md:p-8 space-y-8'>
+                <div className='rounded-3xl bg-white p-5 sm:p-6 md:p-8 space-y-8'>
 
                     {/* price summary */}
                     <div className='space-y-4'>
                         <h3 className='text-xl font-bold text-[#1f2a20]'>দামের সারসংক্ষেপ</h3>
-                        <div className='grid grid-cols-1 gap-3 md:grid-cols-3'>
-                            <div className='rounded-2xl border border-[#e3ebe3] p-5 space-y-1'>
+                        <div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
+                            <div className='rounded-2xl border border-[#e3ebe3] p-4 space-y-1 lg:p-5'>
                                 <p className='text-sm text-[#4b554c]'>সর্বনিম্ন দাম</p>
                                 <p className='text-[#159447]'>
-                                    <span className='text-3xl font-extrabold'>{toBn(lowestPrice)}</span> টাকা
+                                    <span className='text-2xl font-extrabold lg:text-3xl'>{toBn(lowestPrice)}</span> টাকা
                                 </p>
                                 <p className='text-sm text-[#4b554c]'>সবচেয়ে কম দামের বাজার</p>
                             </div>
-                            <div className='rounded-2xl border border-[#e3ebe3] p-5 space-y-1'>
+                            <div className='rounded-2xl border border-[#e3ebe3] p-4 space-y-1 lg:p-5'>
                                 <p className='text-sm text-[#4b554c]'>সর্বাধিক দাম</p>
                                 <p className='text-[#dc4545]'>
-                                    <span className='text-3xl font-extrabold'>{toBn(highestPrice)}</span> টাকা
+                                    <span className='text-2xl font-extrabold lg:text-3xl'>{toBn(highestPrice)}</span> টাকা
                                 </p>
                                 <p className='text-sm text-[#4b554c]'>সবচেয়ে বেশি দামের বাজার</p>
                             </div>
-                            <div className='rounded-2xl border border-[#e3ebe3] p-5 space-y-1'>
+                            <div className='rounded-2xl border border-[#e3ebe3] p-4 space-y-1 lg:p-5'>
                                 <p className='text-sm text-[#4b554c]'>গড় দাম</p>
                                 <p className='text-[#159447]'>
-                                    <span className='text-3xl font-extrabold'>{toBn(averagePrice)}</span> টাকা
+                                    <span className='text-2xl font-extrabold lg:text-3xl'>{toBn(averagePrice)}</span> টাকা
                                 </p>
                                 <p className='text-sm text-[#4b554c]'>প্রতি কেজি-এর হিসাবে</p>
                             </div>
@@ -123,15 +131,38 @@ const ProductDetailsPage = async ({ params }: { params: { productsId: string } }
                     {/* market wise price table */}
                     <div className='space-y-4'>
                         <h3 className='text-xl font-bold text-[#1f2a20]'>বাজারভিত্তিক আজকের দাম</h3>
-                        <div className='overflow-x-auto rounded-2xl border border-[#e3ebe3]'>
-                            <table className='w-full min-w-[640px] text-sm'>
+
+                        {/* mobile: stacked rows so every price is visible without sideways scrolling */}
+                        <ul className='overflow-hidden rounded-2xl border border-[#e3ebe3] md:hidden'>
+                            {markets.map((m, index) => (
+                                <li
+                                    key={m.market}
+                                    className={`flex items-center justify-between gap-3 border-t border-[#e3ebe3] px-4 py-3 text-[#1f2a20] first:border-t-0 ${index % 2 === 1 ? "bg-[#F0F5F0]" : "bg-white"}`}
+                                >
+                                    <div className='min-w-0'>
+                                        <p className='truncate text-sm font-medium'>{m.market}</p>
+                                        <p className='mt-0.5 text-xs text-[#7a857b]'>
+                                            {m.division} · {toBn(m.min)}–{toBn(m.max)} টাকা
+                                        </p>
+                                    </div>
+                                    <div className='shrink-0 text-right'>
+                                        <p className='text-xs text-[#7a857b]'>গড়</p>
+                                        <p className='text-sm font-bold'>{toBn(m.avg)} টাকা</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+
+                        {/* md+: full table */}
+                        <div className='hidden overflow-x-auto rounded-2xl border border-[#e3ebe3] md:block'>
+                            <table className='w-full min-w-[560px] text-sm'>
                                 <thead>
                                     <tr className='text-[#7a857b]'>
-                                        <th className='px-4 py-3 text-left font-medium'>বাজার</th>
-                                        <th className='px-4 py-3 text-left font-medium'>বিভাগ</th>
-                                        <th className='px-4 py-3 text-right font-medium'>সর্বনিম্ন</th>
-                                        <th className='px-4 py-3 text-right font-medium'>সর্বাধিক</th>
-                                        <th className='px-4 py-3 text-right font-medium'>গড়</th>
+                                        <th className='px-3 py-3 sm:px-4 text-left font-medium'>বাজার</th>
+                                        <th className='px-3 py-3 sm:px-4 text-left font-medium'>বিভাগ</th>
+                                        <th className='px-3 py-3 sm:px-4 text-right font-medium'>সর্বনিম্ন</th>
+                                        <th className='px-3 py-3 sm:px-4 text-right font-medium'>সর্বাধিক</th>
+                                        <th className='px-3 py-3 sm:px-4 text-right font-medium'>গড়</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -140,11 +171,11 @@ const ProductDetailsPage = async ({ params }: { params: { productsId: string } }
                                             key={m.market}
                                             className={`border-t border-[#e3ebe3] text-[#1f2a20] ${index % 2 === 1 ? "bg-[#F0F5F0]" : "bg-white"}`}
                                         >
-                                            <td className='px-4 py-3'>{m.market}</td>
-                                            <td className='px-4 py-3'>{m.division}</td>
-                                            <td className='px-4 py-3 text-right'>{toBn(m.min)} টাকা</td>
-                                            <td className='px-4 py-3 text-right'>{toBn(m.max)} টাকা</td>
-                                            <td className='px-4 py-3 text-right font-bold'>{toBn(m.avg)} টাকা</td>
+                                            <td className='px-3 py-3 sm:px-4'>{m.market}</td>
+                                            <td className='px-3 py-3 sm:px-4'>{m.division}</td>
+                                            <td className='px-3 py-3 sm:px-4 text-right'>{toBn(m.min)} টাকা</td>
+                                            <td className='px-3 py-3 sm:px-4 text-right'>{toBn(m.max)} টাকা</td>
+                                            <td className='px-3 py-3 sm:px-4 text-right font-bold'>{toBn(m.avg)} টাকা</td>
                                         </tr>
                                     ))}
                                 </tbody>

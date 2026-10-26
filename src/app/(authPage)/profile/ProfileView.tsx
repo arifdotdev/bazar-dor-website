@@ -12,9 +12,10 @@ import {
     Input,
     Label,
     TextField,
-    toast,
 } from "@heroui/react";
+import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
+import { useInvalidToast } from "@/lib/useInvalidToast";
 
 interface ProfileViewProps {
     user: {
@@ -29,12 +30,13 @@ const inputClass =
 
 const labelClass = "text-base font-semibold text-[#202b23]";
 
-const cardClass = "w-full rounded-3xl border border-[#e3ebe3] bg-[#fbfdfb] p-6 shadow-none sm:p-8";
+const cardClass = "w-full rounded-3xl border border-[#e3ebe3] bg-[#fbfdfb] p-5 shadow-none sm:p-8";
 
 const ProfileView = ({ user }: ProfileViewProps) => {
     const router = useRouter();
     const [isUpdating, setIsUpdating] = useState(false);
     const [isSigningOut, setIsSigningOut] = useState(false);
+    const showInvalidToast = useInvalidToast();
 
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -42,7 +44,7 @@ const ProfileView = ({ user }: ProfileViewProps) => {
         const name = String(formData.get("name") ?? "").trim();
 
         if (name === user.name) {
-            toast.info("নামে কোনো পরিবর্তন নেই।");
+            toast("নামে কোনো পরিবর্তন নেই।", { icon: "ℹ️" });
             return;
         }
 
@@ -51,7 +53,7 @@ const ProfileView = ({ user }: ProfileViewProps) => {
         setIsUpdating(false);
 
         if (error) {
-            toast.danger("আপডেট করা যায়নি, আবার চেষ্টা করুন।");
+            toast.error("আপডেট করা যায়নি, আবার চেষ্টা করুন।");
             return;
         }
 
@@ -68,12 +70,12 @@ const ProfileView = ({ user }: ProfileViewProps) => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F0F5F0] px-4 py-10">
+        <div className="flex-1 bg-[#F0F5F0] px-4 py-8 sm:px-6 sm:py-10">
             <div className="mx-auto max-w-4xl space-y-5">
                 {/* title */}
                 <div>
-                    <h1 className="text-3xl font-extrabold text-[#202b23]">আমার প্রোফাইল</h1>
-                    <p className="mt-2 text-base text-[#68736a]">
+                    <h1 className="text-2xl font-extrabold text-[#202b23] sm:text-3xl">আমার প্রোফাইল</h1>
+                    <p className="mt-2 text-sm text-[#68736a] sm:text-base">
                         আপনার অ্যাকাউন্টের তথ্য দেখুন ও আপডেট করুন।
                     </p>
                 </div>
@@ -96,8 +98,8 @@ const ProfileView = ({ user }: ProfileViewProps) => {
                             </Avatar>
 
                             <div className="min-w-0">
-                                <h2 className="truncate text-xl font-bold text-[#202b23]">{user.name}</h2>
-                                <p className="truncate text-base text-[#68736a]">{user.email}</p>
+                                <h2 className="truncate text-lg font-bold sm:text-xl text-[#202b23]">{user.name}</h2>
+                                <p className="truncate text-sm text-[#68736a] sm:text-base">{user.email}</p>
                             </div>
                         </div>
 
@@ -105,7 +107,7 @@ const ProfileView = ({ user }: ProfileViewProps) => {
                             variant="outline"
                             onPress={handleSignOut}
                             isPending={isSigningOut}
-                            className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-[#dc4545] bg-white px-5 text-base font-semibold text-[#dc4545] shadow-none hover:bg-[#fceeee]"
+                            className="inline-flex h-11 w-full shrink-0 items-center sm:w-auto justify-center gap-2 rounded-xl border border-[#dc4545] bg-white px-5 text-base font-semibold text-[#dc4545] shadow-none hover:bg-[#fceeee]"
                         >
                             <LogOut size={16} />
                             সাইন আউট
@@ -120,7 +122,7 @@ const ProfileView = ({ user }: ProfileViewProps) => {
                     </Card.Header>
 
                     <Card.Content className="mt-5 p-0">
-                        <Form className="flex flex-col gap-5" onSubmit={onSubmit}>
+                        <Form className="flex flex-col gap-5" onSubmit={onSubmit} onInvalid={showInvalidToast}>
                             <TextField
                                 isRequired
                                 name="name"

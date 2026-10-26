@@ -13,7 +13,17 @@ interface Product {
     };
 }
 
+// size of the move, so ranking works whether a fall is sent as -6.2 or 6.2
+const changeSize = (product: Product) => Math.abs(Number(product.change?.pct ?? 0));
 
+const topMovers = (data: Product[], dir: "up" | "down") =>
+    data
+        .filter((product) => product.change?.dir === dir)
+        .sort((a, b) => changeSize(b) - changeSize(a))
+        .slice(0, 6);
+
+// 6 cards: 1 col on mobile, 2 on tablet, 3 on desktop (two full rows)
+const moverGridClass = "mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3";
 
 const ProductSection = async () => {
     const res = await fetch(
@@ -29,26 +39,20 @@ const ProductSection = async () => {
 
     const data: Product[] = await res.json();
 
-    // Products whose prices increased, biggest rise first
-    const upProducts = data
-        .filter((product) => product.change?.dir === "up")
-        .sort((a, b) => Number(b.change?.pct ?? 0) - Number(a.change?.pct ?? 0));
-
-    // Products whose prices decreased, biggest drop first
-    const downProducts = data
-        .filter((product) => product.change?.dir === "down")
-        .sort((a, b) => Number(a.change?.pct ?? 0) - Number(b.change?.pct ?? 0));
+    // Section A: biggest rises first · Section B: biggest drops first
+    const upProducts = topMovers(data, "up");
+    const downProducts = topMovers(data, "down");
 
     return (
-        <div className="mx-auto max-w-7xl">
-            {/* Products with increased prices */}
+        <div className="mx-auto w-full max-w-6xl px-4 pb-10 sm:px-6">
+            {/* Section A — products with increased prices */}
             <section>
-                <h2 className="text-xl font-bold text-[#202b23]">
-                    আজ দাম বেড়েছে
+                <h2 className="flex items-center gap-2 text-xl font-bold text-[#202b23]">
+                    আজ দাম বেড়েছে <span className="text-base text-[#dc4545]" aria-hidden>▲</span>
                 </h2>
 
-                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {upProducts.slice(0, 6).map((product) => (
+                <div className={moverGridClass}>
+                    {upProducts.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
@@ -60,14 +64,14 @@ const ProductSection = async () => {
                 )}
             </section>
 
-            {/* Products with decreased prices */}
+            {/* Section B — products with decreased prices */}
             <section className="mt-8">
-                <h2 className="text-xl font-bold text-[#202b23]">
-                    আজ দাম কমেছে
+                <h2 className="flex items-center gap-2 text-xl font-bold text-[#202b23]">
+                    আজ দাম কমেছে <span className="text-base text-[#159447]" aria-hidden>▼</span>
                 </h2>
 
-                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {downProducts.slice(0, 6).map((product) => (
+                <div className={moverGridClass}>
+                    {downProducts.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
@@ -79,8 +83,8 @@ const ProductSection = async () => {
                 )}
             </section>
 
-            {/* All products */}
-            <section className="mt-8" id='allProductId'>
+            {/* Section C — all products */}
+            <section className="mt-8 scroll-mt-4" id='allProductId'>
                 <AllProducts data={data} />
             </section>
         </div>

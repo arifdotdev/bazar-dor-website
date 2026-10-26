@@ -51,8 +51,9 @@ const Marquee = async () => {
         }
     );
 
+    // the ticker is in the root layout — skip it rather than crash every page
     if (!res.ok) {
-        throw new Error("Failed to fetch product data");
+        return null;
     }
 
     const data = await res.json();
@@ -63,9 +64,11 @@ const Marquee = async () => {
     return (
         <div className="bg-[#f8faf8] border-y-2 border-gray-300">
             <MarqueeText
-                className="py-1"
+                className="py-1.5 text-sm sm:py-1 sm:text-base"
                 direction="right"
                 duration={50}
+                // items are links — stop the scroll so they can be clicked
+                pauseOnHover
             >
                 {headlines.map((h: Headlines) => (
                     <Link

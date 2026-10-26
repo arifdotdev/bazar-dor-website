@@ -8,8 +8,9 @@ const ProfilePage = async () => {
         headers: await headers(),
     });
 
+    // protected → sign in first (with a toast), then come back here
     if (!session) {
-        redirect("/signin");
+        redirect("/signin?toast=login-required&redirect=/profile");
     }
 
     const { name, email, image } = session.user;
