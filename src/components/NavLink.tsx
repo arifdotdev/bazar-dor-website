@@ -32,7 +32,6 @@ const NavLink = ({ categoriesDataPromise }: NavLinkProps) => {
         ...categories.map((category) => ({ href: `/category/${category.slug}`, label: category.nameBn })),
     ];
 
-    // mobile dropdown: Escape closes and returns focus to the hamburger button
     useEffect(() => {
         if (!isOpen) return;
         const onKeyDown = (e: KeyboardEvent) => {
@@ -46,10 +45,8 @@ const NavLink = ({ categoriesDataPromise }: NavLinkProps) => {
 
     return (
         <nav className="relative px-4 py-2 font-bold sm:px-6 md:py-4">
-            {/* invisible layer: a tap outside only closes the menu, it doesn't also open what's underneath */}
             {isOpen && <div aria-hidden onClick={() => setIsOpen(false)} className="fixed inset-0 z-30 md:hidden" />}
 
-            {/* mobile: hamburger button only */}
             <div className="relative z-40 flex items-center md:hidden">
                 <button
                     ref={buttonRef}
@@ -64,7 +61,6 @@ const NavLink = ({ categoriesDataPromise }: NavLinkProps) => {
                 </button>
             </div>
 
-            {/* mobile: dropdown list (hidden until ☰ is tapped) · md+: the usual row */}
             <div
                 id="category-menu"
                 className={`${isOpen ? "flex" : "hidden"} absolute inset-x-4 top-full z-40 flex-col gap-1 rounded-md border border-gray-200 bg-white p-2 shadow-md sm:inset-x-6 md:static md:flex md:flex-row md:flex-wrap md:items-center md:gap-3 md:border-0 md:bg-transparent md:p-0 md:shadow-none`}

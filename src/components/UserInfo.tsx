@@ -19,12 +19,10 @@ const UserInfo = () => {
         router.refresh();
     };
 
-    // session still loading → keep the space empty so the buttons don't flash
     if (isPending) {
         return <Bone className="h-9 w-28 rounded-xl sm:h-11 sm:w-32" />;
     }
 
-    // signed out → sign in / sign up buttons
     if (!session) {
         return (
             <div className="flex items-center gap-1 text-sm sm:gap-2">
@@ -42,7 +40,6 @@ const UserInfo = () => {
         );
     }
 
-    // signed in → avatar + name with dropdown
     const { user } = session;
     const firstName = user.name.split(" ")[0];
 
@@ -72,7 +69,6 @@ const UserInfo = () => {
                 placement="bottom end"
                 className="w-72 max-w-[calc(100vw-2rem)] rounded-2xl border border-[#e3ebe3] bg-[#fbfdfb] p-2 shadow-lg"
             >
-                {/* user name and email */}
                 <div className="px-3 pt-2 pb-3">
                     <p className="truncate text-base font-semibold text-[#202b23]">{user.name}</p>
                     <p className="truncate text-sm text-[#68736a]">{user.email}</p>

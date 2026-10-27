@@ -1,11 +1,9 @@
 @import "tailwindcss";
 @import "@heroui/styles";
-/* daisyUI's .toast and .skeleton clash with HeroUI's components of the same name */
 @plugin "daisyui" {
   exclude: toast, skeleton;
 }
 
-/* hide scrollbar but keep scrolling (mobile category nav) */
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar {

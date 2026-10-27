@@ -1,7 +1,6 @@
 import { MapPinOff } from "lucide-react";
 import NotFoundCard from "@/components/NotFoundCard";
 
-// any unknown route, e.g. /abc or /product/unknown
 const NotFound = () => {
   return (
     <NotFoundCard

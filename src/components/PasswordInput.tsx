@@ -3,8 +3,6 @@ import { useState, type ComponentProps } from "react";
 import { Input } from "@heroui/react";
 import { Eye, EyeOff } from "lucide-react";
 
-// HeroUI Input (use inside a TextField) with a show / hide toggle —
-// on phones a mistyped hidden password is the most common failed sign-in
 const PasswordInput = ({ className = "", ...props }: ComponentProps<typeof Input>) => {
     const [isVisible, setIsVisible] = useState(false);
 

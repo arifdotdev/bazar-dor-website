@@ -1,7 +1,6 @@
 import { SearchX } from "lucide-react";
 import NotFoundCard from "@/components/NotFoundCard";
 
-// shown when the product id doesn't exist
 const ProductNotFound = () => {
     return (
         <NotFoundCard

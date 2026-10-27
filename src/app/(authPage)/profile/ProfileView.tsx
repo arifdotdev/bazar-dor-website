@@ -72,7 +72,6 @@ const ProfileView = ({ user }: ProfileViewProps) => {
     return (
         <div className="flex-1 bg-[#F0F5F0] px-4 py-8 sm:px-6 sm:py-10">
             <div className="mx-auto max-w-4xl space-y-5">
-                {/* title */}
                 <div>
                     <h1 className="text-2xl font-extrabold text-[#202b23] sm:text-3xl">আমার প্রোফাইল</h1>
                     <p className="mt-2 text-sm text-[#68736a] sm:text-base">
@@ -80,7 +79,6 @@ const ProfileView = ({ user }: ProfileViewProps) => {
                     </p>
                 </div>
 
-                {/* user card */}
                 <Card className={cardClass}>
                     <Card.Content className="flex flex-col gap-4 p-0 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex min-w-0 items-center gap-4">
@@ -115,7 +113,6 @@ const ProfileView = ({ user }: ProfileViewProps) => {
                     </Card.Content>
                 </Card>
 
-                {/* info card */}
                 <Card className={cardClass}>
                     <Card.Header className="p-0">
                         <Card.Title className="text-xl font-bold text-[#202b23]">তথ্য</Card.Title>

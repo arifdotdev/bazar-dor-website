@@ -18,7 +18,6 @@ interface AllProductsProps {
 
 const toBn = (n: number) => n.toLocaleString("bn-BD");
 
-// Section C: every product from the API, 1 → 2 → 3 columns as the screen grows
 const AllProducts = ({ data }: AllProductsProps) => {
     const products = Array.isArray(data) ? data : [];
 

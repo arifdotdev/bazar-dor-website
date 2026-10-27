@@ -1,11 +1,9 @@
 import { Skeleton } from "@heroui/react";
 
-// HeroUI skeleton tinted to the site's green-grey palette
 export const Bone = ({ className = "" }: { className?: string }) => (
     <Skeleton className={`rounded-lg bg-[#e3ebe3] ${className}`} />
 );
 
-// same shape as ProductCard
 export const ProductCardSkeleton = () => (
     <div className="rounded-2xl border border-[#dfe7df] bg-[#fbfdfb] p-3.5">
         <div className="flex items-center gap-3">
@@ -33,7 +31,6 @@ export const ProductGridSkeleton = ({ count = 6 }: { count?: number }) => (
     </div>
 );
 
-// category menu placeholder while categories load: hamburger on mobile, link row on md+
 export const NavSkeleton = () => (
     <div className="flex items-center gap-3 overflow-hidden px-4 py-2 sm:px-6 md:py-4">
         <Bone className="size-10 shrink-0 rounded-md md:hidden" />

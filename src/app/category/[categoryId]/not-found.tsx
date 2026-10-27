@@ -1,7 +1,6 @@
 import { PackageSearch } from "lucide-react";
 import NotFoundCard from "@/components/NotFoundCard";
 
-// shown when a category has no products or the slug doesn't exist
 const CategoryNotFound = () => {
     return (
         <NotFoundCard

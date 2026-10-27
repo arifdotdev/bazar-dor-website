@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ArrowLeft, RotateCw, TriangleAlert } from "lucide-react";
 
-// a failed API call (products / categories) lands here instead of crashing the page
 const ErrorPage = ({ reset }: { error: Error & { digest?: string }; reset: () => void }) => {
     return (
         <div className="flex flex-1 items-center justify-center bg-[#F0F5F0] px-4 py-10 sm:px-6 sm:py-16">

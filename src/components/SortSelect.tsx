@@ -14,7 +14,6 @@ const SortSelect = ({ value }: { value: SortOption }) => {
     const pathname = usePathname();
 
     const handleChange = (sort: string) => {
-        // default order → clean URL without ?sort
         const href = sort === "default" ? pathname : `${pathname}?sort=${sort}`;
         router.replace(href, { scroll: false });
     };

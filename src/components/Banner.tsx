@@ -7,7 +7,6 @@ const Banner = () => {
         <div className="max-w-6xl mx-auto w-full px-4 sm:px-6">
             <section className="my-6 rounded-[22px] border border-[#dfe9e1] bg-[#f9fcf9] px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
                 <div className="flex flex-col-reverse items-center justify-between gap-6 text-center md:flex-row md:gap-8 md:text-left">
-                    {/* Banner Content */}
                     <div className="w-full md:w-[58%]">
                         <TodayDate className="inline-block rounded-full bg-[#e2f3e8] px-3 py-1 text-xs font-medium text-[#078b45]" />
 
@@ -29,7 +28,6 @@ const Banner = () => {
                         </Link>
                     </div>
 
-                    {/* Banner Image */}
                     <div className="flex w-full items-center justify-center md:w-[38%] md:justify-end">
                         <Image
                             src="/bazar-hero.png"

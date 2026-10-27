@@ -41,12 +41,10 @@ const CategoryPages = async ({ params, searchParams }: CategoryPageProps) => {
     const { sort: sortParam } = await searchParams;
     const sort = parseSortOption(sortParam);
 
-    const res = await fetch(`https://openapi.programming-hero.com/api/bazardor/products?category=${categoryId}`)
+    const res = await fetch(`https://openapi.programming-hero.com/api/bazardor/products?category=${encodeURIComponent(categoryId)}`)
 
-    // API error → treat like an empty category
     const categoryData: Product[] = res.ok ? await res.json() : []
 
-    // invalid slug or no products → category not-found.tsx
     if (!Array.isArray(categoryData) || categoryData.length === 0) {
         notFound()
     }
@@ -54,7 +52,6 @@ const CategoryPages = async ({ params, searchParams }: CategoryPageProps) => {
     const categoryNameBn = categoryData[0]?.categoryNameBn;
     const categoryIcon = categoryData[0]?.categoryIcon;
 
-    // sort by today's numeric price; "default" keeps the API order
     const sortedProducts = sortByPrice(categoryData, sort);
 
 
@@ -70,7 +67,6 @@ const CategoryPages = async ({ params, searchParams }: CategoryPageProps) => {
                         </div>
                     </div>
                 </div>
-                {/* sort */}
                 <div className='my-5 border-0 rounded-3xl sm:rounded-4xl'>
                     <div className='bg-[#fff] p-4 border-0 rounded-3xl flex justify-end sm:p-5 sm:rounded-4xl'>
                         <SortSelect value={sort} />
@@ -90,7 +86,6 @@ const CategoryPages = async ({ params, searchParams }: CategoryPageProps) => {
                                     key={product.id}
                                     className="rounded-2xl border border-[#dfe7df] bg-[#fbfdfb] p-3.5 transition-shadow hover:shadow-sm"
                                 >
-                                    {/* Product image and name */}
                                     <div className="flex items-center gap-3">
                                         <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#f0f4ef]">
                                             {product.image &&
@@ -119,7 +114,6 @@ const CategoryPages = async ({ params, searchParams }: CategoryPageProps) => {
                                         </div>
                                     </div>
 
-                                    {/* Today's price and price change */}
                                     <div className="mt-3 flex items-end justify-between gap-2">
                                         <div>
                                             <p className="text-xs text-[#68736a]">

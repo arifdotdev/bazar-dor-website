@@ -7,7 +7,6 @@ interface NotFoundCardProps {
     message: string;
 }
 
-// shared 404 card for the global, category and product not-found pages
 const NotFoundCard = ({ icon: Icon, title, message }: NotFoundCardProps) => {
     return (
         <div className="flex flex-1 items-center justify-center bg-[#F0F5F0] px-4 py-10 sm:px-6 sm:py-16">

@@ -27,7 +27,6 @@ const labelClass = "text-base font-semibold text-[#202b23]";
 const socialButtonClass =
     "flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-[#e3ebe3] bg-white text-[15px] font-semibold text-[#202b23] transition-colors hover:bg-[#f0f5f0] cursor-pointer";
 
-// a protected page sends users here with ?redirect=/path; only same-site paths are allowed
 const getRedirectTarget = () => {
     const target = new URLSearchParams(window.location.search).get("redirect");
     return target?.startsWith("/") && !target.startsWith("//") ? target : "/";
@@ -52,7 +51,6 @@ const SignInForm = () => {
 
         if (data) {
             toast.success("সফলভাবে সাইন ইন হয়েছে!");
-            // no router.refresh(): it would re-render /signin, which now redirects signed-in users
             router.push(getRedirectTarget());
         }
 
@@ -67,10 +65,8 @@ const SignInForm = () => {
         }
     };
 
-    // ?toast=social-login lets the next page show a success toast after the redirect
     const handleSocialSignIn = async (provider: "google" | "github") => {
         const callbackURL = `${getRedirectTarget()}?toast=social-login`;
-        // a misconfigured provider can reject instead of returning { error }
         const result = await authClient.signIn.social({ provider, callbackURL }).catch(() => null);
         if (!result || result.error) {
             toast.error("সোশ্যাল লগইন করা যায়নি, আবার চেষ্টা করুন।");
@@ -78,9 +74,7 @@ const SignInForm = () => {
     };
 
     return (
-        // phones: tighter vertical spacing so the whole form fits one screen (360×740)
         <div className="flex flex-1 flex-col items-center justify-center bg-[#F0F5F0] px-4 py-5 sm:py-12">
-            {/* title */}
             <div className="mb-4 text-center sm:mb-8">
                 <h1 className="text-2xl font-extrabold text-[#202b23] sm:text-3xl">সাইন ইন</h1>
                 <p className="mt-1.5 text-sm text-[#68736a] sm:mt-3 sm:text-base">
@@ -88,7 +82,6 @@ const SignInForm = () => {
                 </p>
             </div>
 
-            {/* card */}
             <Card className="w-full max-w-lg rounded-3xl border border-[#e3ebe3] bg-[#fbfdfb] px-5 pt-5 pb-3 shadow-none sm:p-8">
                 <Card.Content className="flex flex-col gap-5 p-0 sm:gap-6">
                     <Form className="flex flex-col gap-4 sm:gap-5" onSubmit={onSubmit} onInvalid={showInvalidToast}>
@@ -106,7 +99,6 @@ const SignInForm = () => {
                             }}
                         >
                             <Label className={labelClass}>ইমেইল</Label>
-                            {/* phone keyboards: no auto-capital / autocorrect in addresses, "next" key */}
                             <Input
                                 fullWidth
                                 placeholder="you@example.com"
@@ -143,14 +135,12 @@ const SignInForm = () => {
                         </Button>
                     </Form>
 
-                    {/* divider */}
                     <div className="flex items-center gap-4">
                         <Separator className="flex-1 bg-[#e3ebe3]" />
                         <span className="text-sm text-[#202b23]">অথবা</span>
                         <Separator className="flex-1 bg-[#e3ebe3]" />
                     </div>
 
-                    {/* social sign-in */}
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <button type="button" onClick={() => handleSocialSignIn("google")} className={socialButtonClass}>
                             <svg aria-label="Google logo" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><g><path d="m0 0H512V512H0" fill="#fff"></path><path fill="#34a853" d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"></path><path fill="#4285f4" d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"></path><path fill="#fbbc02" d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"></path><path fill="#ea4335" d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"></path></g></svg>
@@ -165,7 +155,6 @@ const SignInForm = () => {
 
                 <Card.Footer className="mt-4 flex-wrap items-center justify-center gap-x-1 p-0 text-base text-[#202b23]">
                     <span>অ্যাকাউন্ট নেই? </span>
-                    {/* py-2.5 → 44px tall tap target */}
                     <Link
                         href="/signup"
                         className="py-2.5 font-medium text-[#159447] no-underline hover:underline"
@@ -175,7 +164,6 @@ const SignInForm = () => {
                 </Card.Footer>
             </Card>
 
-            {/* back to home */}
             <Link
                 href="/"
                 className="mt-5 inline-flex items-center gap-1.5 px-2 py-2.5 text-base text-[#68736a] no-underline hover:text-[#202b23]"

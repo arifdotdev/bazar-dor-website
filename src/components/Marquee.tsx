@@ -33,11 +33,11 @@ const unitBn: Record<string, string> = {
 
 const ChangeIndicator = ({ dir }: ChangeIndicatorProps) => {
     if (dir?.toLowerCase() === "down") {
-        return <ArrowDown size={14} className="text-red-500" />;
+        return <ArrowDown size={14} className="text-green-500" />;
     }
 
     if (dir?.toLowerCase() === "up") {
-        return <ArrowUp size={14} className="text-green-500" />;
+        return <ArrowUp size={14} className="text-red-500" />;
     }
 
     return null;
@@ -51,14 +51,12 @@ const Marquee = async () => {
         }
     );
 
-    // the ticker is in the root layout — skip it rather than crash every page
     if (!res.ok) {
         return null;
     }
 
     const data = await res.json();
 
-    // Adjust this if the API returns products inside data.data.
     const headlines = Array.isArray(data) ? data : data.data ?? [];
 
     return (
@@ -67,7 +65,6 @@ const Marquee = async () => {
                 className="py-1.5 text-sm sm:py-1 sm:text-base"
                 direction="right"
                 duration={50}
-                // items are links — stop the scroll so they can be clicked
                 pauseOnHover
             >
                 {headlines.map((h: Headlines) => (
@@ -92,9 +89,9 @@ const Marquee = async () => {
                                 <span
                                     className={
                                         h.change?.dir?.toLowerCase() === "down"
-                                            ? "text-red-500"
+                                            ? "text-green-500"
                                             : h.change?.dir?.toLowerCase() === "up"
-                                                ? "text-green-500"
+                                                ? "text-red-500"
                                                 : "text-gray-500"
                                     }
                                 >
